@@ -262,6 +262,21 @@ jobs:
           # upstream also passes --hwcodec; ProTech's patch 0001 removes the ffmpeg libraries it needs
           ./build.py --flutter --unix-file-copy-paste ${{ matrix.job.extra-build-args }}
 
+      - name: Keep the unpackaged app (a packaging problem must never cost a rebuild)
+        working-directory: ${{ github.workspace }}
+        run: |
+          mkdir -p raw
+          ditto -c -k --sequesterRsrc --keepParent "src/flutter/build/macos/Build/Products/Release/RustDesk.app" "raw/RustDesk-app-${{ matrix.job.package-arch }}.zip"
+          ls -la raw
+
+      - name: Upload the unpackaged app
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: RustDesk-app-raw-${{ matrix.job.package-arch }}
+          path: raw/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Package (rename, ad-hoc signature, zip)
         working-directory: ${{ github.workspace }}
         run: |

@@ -37,7 +37,11 @@ xattr -cr "$APP"
 echo "== signing (ad hoc)"
 # inside-out: frameworks and libraries, then the helper programs, then the bundle itself
 find "$APP/Contents/Frameworks" -maxdepth 1 \( -name '*.framework' -o -name '*.dylib' \) 2>/dev/null | while read -r f; do codesign --force --sign - --timestamp=none "$f"; done
-for f in "$APP"/Contents/MacOS/*; do codesign --force --sign - --timestamp=none "$f"; done
+# The helper programs next to the main program are signed first. The main program itself is signed together with the bundle: signing it
+# on its own makes codesign check its siblings, and on an Intel build the helper ("service") is not signed yet ("code object is not
+# signed at all"; Apple-chip builds are signed by the linker, which is why only Intel failed).
+MAIN="$APP/Contents/MacOS/$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP/Contents/Info.plist" 2>/dev/null || echo RustDesk)"
+for f in "$APP"/Contents/MacOS/*; do [ "$f" = "$MAIN" ] || codesign --force --sign - --timestamp=none "$f"; done
 codesign --force --sign - --timestamp=none "$APP"
 codesign --verify --deep --strict --verbose=1 "$APP"
 echo "== signature: $(codesign -dv "$APP" 2>&1 | grep -E 'Signature|Identifier' | tr '\n' ' ')"
