@@ -1,0 +1,13 @@
+{
+  "app-name": "ProTech Technician",
+  "override-settings": {
+    "custom-rendezvous-server": "{{HOST}}",
+    "relay-server": "{{RELAY}}",
+    "key": "{{KEY}}",
+    "register-device": "N",
+    "display-name": "ProTech Technician",
+    "allow-auto-update": "N",
+    "protech-website-url": "{{SITE}}",
+    "protech-source-url": "{{SITE}}/source/"
+  }
+}

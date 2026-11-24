@@ -1,0 +1,8 @@
+upstream repo   : https://github.com/rustdesk/rustdesk   (AGPL-3.0)
+upstream tag    : 1.5.3
+main base commit: 95cca3f661f635b3cc85c04935fe8d96d8f432ef
+hbb_common repo : https://github.com/rustdesk/hbb_common (submodule libs/hbb_common)
+hbb_common base : fae47e024dd83cef6aaecde0aa7d11731df11649
+exported        : 2026-11-23T15:38:07
+main tree       : 0223a7a0bac92cc88a057b828af6b4770be26c77     (git tree hash of upstream + all main patches)
+hbb_common tree : 05966df2b5185e91ed66f60a1450b1ca4c558e2e     (git tree hash of upstream + the hbb_common patches)

@@ -1,0 +1,59 @@
+From b7541290846c669e2a9bb7abb935c2ee85df92b0 Mon Sep 17 00:00:00 2001
+From: ProTech Build <build@localhost>
+Date: Mon, 23 Nov 2026 14:49:48 +1100
+Subject: [PATCH 1/3] build: drop hwcodec vcpkg dependencies (ffmpeg,
+ mfx-dispatch)
+
+The ProTech build does not enable the hwcodec/vram features, so the multi-hour ffmpeg build is not needed.
+Software codecs (VP9/VP8/AV1) are used.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+---
+ vcpkg.json | 34 ----------------------------------
+ 1 file changed, 34 deletions(-)
+
+diff --git a/vcpkg.json b/vcpkg.json
+index d1cd404..507138d 100644
+--- a/vcpkg.json
++++ b/vcpkg.json
+@@ -48,40 +48,6 @@
+     {
+       "name": "libyuv",
+       "host": false
+-    },
+-    {
+-      "name": "mfx-dispatch",
+-      "host": true,
+-      "platform": "((x86 | x64) & (android | linux)) | (windows & !uwp)"
+-    },
+-    {
+-      "name": "mfx-dispatch",
+-      "host": false,
+-      "platform": "((x86 | x64) & (android | linux)) | (windows & !uwp)"
+-    },
+-    {
+-      "name": "ffmpeg",
+-      "host": true,
+-      "features": [
+-        {
+-          "name": "amf",
+-          "platform": "(((windows & !arm) | linux) & static)"
+-        },
+-        {
+-          "name": "nvcodec",
+-          "platform": "(((windows & !arm) | linux) & static)"
+-        },
+-        {
+-          "name": "qsv",
+-          "platform": "(windows & !arm & static)"
+-        }
+-      ],
+-      "platform": "((windows | (linux & !arm32) | osx) & static)"
+-    },
+-    {
+-      "name": "ffmpeg",
+-      "host": false,
+-      "platform": "((android | ios | (linux & arm32)) & static)"
+     }
+   ],
+   "vcpkg-configuration": {

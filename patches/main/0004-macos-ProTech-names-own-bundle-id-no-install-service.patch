@@ -1,0 +1,122 @@
+From 55a01d3de32091539ba9f1a571ea7489a6d8b92e Mon Sep 17 00:00:00 2001
+From: ProTech Build <build@localhost>
+Date: Tue, 24 Nov 2026 16:41:14 +1100
+Subject: [PATCH 4/4] macos: ProTech names, own bundle id, no "install service"
+ card
+
+Info.plist: visible app name "ProTech Support" (menu, permission prompts), URL scheme and id of its own so it never
+collides with a stock RustDesk on the same Mac. AppInfo.xcconfig + project.pbxproj: bundle id au.com.protechitsolutions.support,
+copyright (upstream notice kept). PRODUCT_NAME stays RustDesk so build.py's packaging paths keep working.
+desktop_home_page.dart: remove the macOS "install the service" card (pre-login/unattended access needs an administrator
+password; ProTech Support only accepts a session while its window is open and the customer clicks Accept).
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+---
+ flutter/lib/desktop/pages/desktop_home_page.dart | 9 ++-------
+ flutter/macos/Runner.xcodeproj/project.pbxproj   | 6 +++---
+ flutter/macos/Runner/Configs/AppInfo.xcconfig    | 6 ++++--
+ flutter/macos/Runner/Info.plist                  | 8 +++++---
+ 4 files changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/flutter/lib/desktop/pages/desktop_home_page.dart b/flutter/lib/desktop/pages/desktop_home_page.dart
+index e13a7e5..9f0bd29 100644
+--- a/flutter/lib/desktop/pages/desktop_home_page.dart
++++ b/flutter/lib/desktop/pages/desktop_home_page.dart
+@@ -502,14 +502,9 @@ class _DesktopHomePageState extends State<DesktopHomePage>
+           bind.mainIsCanInputMonitoring(prompt: true);
+           watchIsInputMonitoring = true;
+         }, help: 'Help', link: translate("doc_mac_permission"));
+-      } else if (!isOutgoingOnly &&
+-          !svcStopped.value &&
+-          bind.mainIsInstalled() &&
+-          !bind.mainIsInstalledDaemon(prompt: false)) {
+-        return buildInstallCard("", "install_daemon_tip", "Install", () async {
+-          bind.mainIsInstalledDaemon(prompt: true);
+-        });
+       }
++      // ProTech: the "install the service" card (pre-login / unattended access, asks for an administrator password) is removed on purpose:
++      // ProTech Support only accepts a session while its window is open and the customer has clicked Accept.
+       //// Disable microphone configuration for macOS. We will request the permission when needed.
+       // else if ((await osxCanRecordAudio() !=
+       //     PermissionAuthorizeType.authorized)) {
+diff --git a/flutter/macos/Runner.xcodeproj/project.pbxproj b/flutter/macos/Runner.xcodeproj/project.pbxproj
+index c41bfa1..f66c61f 100644
+--- a/flutter/macos/Runner.xcodeproj/project.pbxproj
++++ b/flutter/macos/Runner.xcodeproj/project.pbxproj
+@@ -445,7 +445,7 @@
+ 					../../target/profile,
+ 				);
+ 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+-				PRODUCT_BUNDLE_IDENTIFIER = com.carriez.rustdesk;
++				PRODUCT_BUNDLE_IDENTIFIER = au.com.protechitsolutions.support;
+ 				PROVISIONING_PROFILE_SPECIFIER = "";
+ 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
+ 				SWIFT_VERSION = 5.0;
+@@ -590,7 +590,7 @@
+ 					../../target/debug,
+ 				);
+ 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+-				PRODUCT_BUNDLE_IDENTIFIER = com.carriez.rustdesk;
++				PRODUCT_BUNDLE_IDENTIFIER = au.com.protechitsolutions.support;
+ 				PROVISIONING_PROFILE_SPECIFIER = "";
+ 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
+ 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = Runner/bridge_generated.h;
+@@ -627,7 +627,7 @@
+ 					__cgpreloginapp,
+ 					/dev/null,
+ 				);
+-				PRODUCT_BUNDLE_IDENTIFIER = com.carriez.rustdesk;
++				PRODUCT_BUNDLE_IDENTIFIER = au.com.protechitsolutions.support;
+ 				PROVISIONING_PROFILE_SPECIFIER = "";
+ 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
+ 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = Runner/bridge_generated.h;
+diff --git a/flutter/macos/Runner/Configs/AppInfo.xcconfig b/flutter/macos/Runner/Configs/AppInfo.xcconfig
+index 4c6b155..81cd9f0 100644
+--- a/flutter/macos/Runner/Configs/AppInfo.xcconfig
++++ b/flutter/macos/Runner/Configs/AppInfo.xcconfig
+@@ -5,10 +5,12 @@
+ // 'flutter create' template.
+ 
+ // The application's name. By default this is also the title of the Flutter window.
++// ProTech: kept as RustDesk on purpose (build.py copies into Release/RustDesk.app); the visible name comes from Info.plist
++// (CFBundleName / CFBundleDisplayName) and the finished app is renamed to "ProTech Support.app" when it is packaged.
+ PRODUCT_NAME = RustDesk
+ 
+ // The application's bundle identifier
+-PRODUCT_BUNDLE_IDENTIFIER = com.carriez.flutterHbb
++PRODUCT_BUNDLE_IDENTIFIER = au.com.protechitsolutions.support
+ 
+ // The copyright displayed in application information
+-PRODUCT_COPYRIGHT = Copyright © 2026 Purslane Tech Pte. Ltd. All rights reserved.
++PRODUCT_COPYRIGHT = Copyright © 2026 ProTech IT Solutions Pty Ltd. Based on RustDesk (AGPL-3.0), Copyright © Purslane Tech Pte. Ltd.
+diff --git a/flutter/macos/Runner/Info.plist b/flutter/macos/Runner/Info.plist
+index 36ca81e..d213f34 100644
+--- a/flutter/macos/Runner/Info.plist
++++ b/flutter/macos/Runner/Info.plist
+@@ -13,7 +13,9 @@
+ 	<key>CFBundleInfoDictionaryVersion</key>
+ 	<string>6.0</string>
+ 	<key>CFBundleName</key>
+-	<string>$(PRODUCT_NAME)</string>
++	<string>ProTech Support</string>
++	<key>CFBundleDisplayName</key>
++	<string>ProTech Support</string>
+ 	<key>CFBundlePackageType</key>
+ 	<string>APPL</string>
+ 	<key>CFBundleShortVersionString</key>
+@@ -26,10 +28,10 @@
+ 			<key>CFBundleURLIconFile</key>
+ 			<string></string>
+ 			<key>CFBundleURLName</key>
+-			<string>com.carriez.rustdesk</string>
++			<string>au.com.protechitsolutions.support</string>
+ 			<key>CFBundleURLSchemes</key>
+ 			<array>
+-				<string>rustdesk</string>
++				<string>protech-support</string>
+ 			</array>
+ 		</dict>
+ 	</array>
+-- 
+2.56.0.windows.4
+

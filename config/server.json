@@ -1,0 +1,9 @@
+{
+    "_note":  "Single place for the server identity used by every ProTech client variant. PUBLIC values only - never put the server secret key here. 'site' is the public URL of the customer download/source page (no trailing slash); while empty, the About-page links fall back to the compiled-in placeholder. 'api' is the https base URL of the ProTech presence service (no path): while empty the customer client reports NOTHING to anyone; once set it tells that service its ID, PC name, Windows username and OS every ~15 s so staff can see who is running it (the privacy statement must say so). Set it only after the service is live. 'privacy' is the https URL of ProTech's privacy statement on its website; it is linked from the download page (only the page uses it, the exe does not).",
+    "host":  "support.prtch.com",
+    "relay":  "support.prtch.com",
+    "key":  "qxiKpGCGeDqriWEEGn1lfVaKzZghLjwcoRlA8oZfKjM=",
+    "site":  "https://support.prtch.com",
+    "api":  "https://support.prtch.com",
+    "privacy":  "https://protechitsolutions.com.au/remote-support"
+}

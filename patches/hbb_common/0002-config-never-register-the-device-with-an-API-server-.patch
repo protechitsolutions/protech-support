@@ -1,0 +1,35 @@
+From dcdf9ef699fa77b09137e0380d3699cc2c054e91 Mon Sep 17 00:00:00 2001
+From: ProTech Build <build@localhost>
+Date: Mon, 23 Nov 2026 14:56:15 +1100
+Subject: [PATCH 2/2] config: never register the device with an API server by
+ default
+
+The open-source server has no API service, so the client must not send device info or heartbeats unless
+register-device is set explicitly.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+---
+ src/config.rs | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/config.rs b/src/config.rs
+index 7d17290..1c88ea6 100644
+--- a/src/config.rs
++++ b/src/config.rs
+@@ -1303,13 +1303,15 @@ impl Config {
+         }
+     }
+ 
++    // ProTech: fail closed. The open-source server has no API service, so a client without an explicit
++    // register-device setting must never send device info / heartbeats to http://<server>:21114.
+     pub fn no_register_device() -> bool {
+         BUILTIN_SETTINGS
+             .read()
+             .unwrap()
+             .get(keys::OPTION_REGISTER_DEVICE)
+             .map(|v| v == "N")
+-            .unwrap_or(false)
++            .unwrap_or(true)
+     }
+ 
+     pub fn is_disable_change_permanent_password() -> bool {

@@ -1,0 +1,29 @@
+From 5f331448b1a215a2760b717ebb5f4d7896fbdd9c Mon Sep 17 00:00:00 2001
+From: ProTech Build <build@localhost>
+Date: Mon, 23 Nov 2026 14:49:48 +1100
+Subject: [PATCH 2/3] custom client: verify custom.txt against ProTech's own
+ signing key
+
+Upstream's key is replaced, so a config signed for any other RustDesk custom client is rejected.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+---
+ src/common.rs | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/common.rs b/src/common.rs
+index 4bc5bc2..66e1f68 100644
+--- a/src/common.rs
++++ b/src/common.rs
+@@ -2609,7 +2609,10 @@ pub fn read_custom_client(config: &str) {
+         log::error!("Failed to decode custom client config");
+         return;
+     };
+-    const KEY: &str = "5Qbwsde3unUcJBtrx9ZkvUmwFNoExHzpryHuPUdqlWM=";
++    // ProTech: custom.txt must be signed with ProTech's own key (upstream's key is replaced), so a
++    // config signed for any other RustDesk custom client is rejected here. Private half lives only in
++    // C:\Users\User\ProTech\rustdesk\signing\ and is never committed.
++    const KEY: &str = "bszXUSYZZo/koDjKtRQZ0ttGb/o3WDAC36ayMtm5T9Q=";
+     let Some(pk) = get_rs_pk(KEY) else {
+         log::error!("Failed to parse public key of custom client");
+         return;
