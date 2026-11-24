@@ -52,7 +52,7 @@ jobs:
 
       - name: Assemble the source (upstream + ProTech patches)
         working-directory: ${{ github.workspace }}
-        run: ci/scripts/assemble-source.sh "$GITHUB_WORKSPACE/src" --mac
+        run: bash ci/scripts/assemble-source.sh "$GITHUB_WORKSPACE/src" --mac
 
       - name: Install prerequisites
         run: |
@@ -142,11 +142,11 @@ jobs:
 
       - name: Assemble the source (upstream + ProTech patches)
         working-directory: ${{ github.workspace }}
-        run: ci/scripts/assemble-source.sh "$GITHUB_WORKSPACE/src" --mac
+        run: bash ci/scripts/assemble-source.sh "$GITHUB_WORKSPACE/src" --mac
 
       - name: ProTech icons
         working-directory: ${{ github.workspace }}
-        run: ci/scripts/brand-mac.sh "$GITHUB_WORKSPACE/src"
+        run: bash ci/scripts/brand-mac.sh "$GITHUB_WORKSPACE/src"
 
       - name: Install build runtime
         run: |
@@ -265,7 +265,7 @@ jobs:
       - name: Package (rename, ad-hoc signature, zip)
         working-directory: ${{ github.workspace }}
         run: |
-          ci/scripts/package-mac.sh \
+          bash ci/scripts/package-mac.sh \
             "src/flutter/build/macos/Build/Products/Release/RustDesk.app" \
             "$GITHUB_WORKSPACE/out" \
             --arch ${{ matrix.job.package-arch }}
